@@ -11,6 +11,33 @@
 
 项目重点不是追求业务效果，而是亲手走通一套可以迁移到其他任务的 SFT SOP。
 
+## Codex-native SDD
+
+本仓库已经按照 Codex `/init` 的目标初始化了根目录
+[`AGENTS.md`](AGENTS.md)，并将开发流程固定为：
+
+```text
+Spec → Plan → Tasks → Implement → Verify
+```
+
+具体规则、模板和现有系统的基线规格在 [`specs/`](specs/README.md)：
+
+```text
+specs/
+├── _template/                 # 新变更的 spec/plan/tasks 模板
+└── 001-sft-learning-sop/      # 当前实现的可追踪基线
+```
+
+任何影响行为的修改应先创建或更新规格，再实现代码。检查规格目录、状态和
+`FR-NNN → AC-NNN → T-NNN` 追踪关系：
+
+```bash
+make sdd-check
+```
+
+`/init` 在这里负责让 Codex 自动加载持久的仓库规则；`specs/` 则让需求、计划、任务和
+验收标准成为版本化的事实来源。
+
 ## 你会学到什么
 
 - 如何先定义任务、标签空间和可重复的测试集

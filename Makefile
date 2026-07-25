@@ -1,4 +1,4 @@
-.PHONY: setup data check baseline train evaluate infer test lint clean
+.PHONY: setup data check sdd-check baseline train evaluate infer test lint clean
 
 PYTHON ?= python3.11
 MODEL ?= Qwen/Qwen3-0.6B-Base
@@ -14,6 +14,9 @@ data:
 
 check:
 	PYTHONPATH=src $(PYTHON) -m sft_sop.check_data
+
+sdd-check:
+	PYTHONPATH=src $(PYTHON) -m sft_sop.check_sdd
 
 baseline:
 	PYTHONPATH=src $(PYTHON) -m sft_sop.evaluate \

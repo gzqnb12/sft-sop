@@ -28,6 +28,7 @@ dev = [
 [project.scripts]
 sft-build-data = "sft_sop.build_data:main"
 sft-check-data = "sft_sop.check_data:main"
+sft-check-sdd = "sft_sop.check_sdd:main"
 sft-train = "sft_sop.train:main"
 sft-evaluate = "sft_sop.evaluate:main"
 sft-infer = "sft_sop.infer:main"
