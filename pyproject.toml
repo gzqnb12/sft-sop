@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sft-sop"
+version = "0.1.0"
+description = "A small, reproducible SOP project for learning supervised fine-tuning with TRL and LoRA."
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = { text = "MIT" }
+dependencies = [
+  "accelerate>=1.2,<3",
+  "datasets>=4,<5",
+  "peft>=0.15,<1",
+  "PyYAML>=6,<7",
+  "torch>=2.4",
+  "transformers>=5,<6",
+  "trl>=1,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+sft-build-data = "sft_sop.build_data:main"
+sft-check-data = "sft_sop.check_data:main"
+sft-train = "sft_sop.train:main"
+sft-evaluate = "sft_sop.evaluate:main"
+sft-infer = "sft_sop.infer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

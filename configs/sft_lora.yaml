@@ -1,0 +1,29 @@
+# 所有相对路径都以仓库根目录为起点。
+model_name: Qwen/Qwen3-0.6B-Base
+train_file: data/train.jsonl
+validation_file: data/validation.jsonl
+output_dir: artifacts/qwen3-0.6b-ticket-lora
+
+# 教学数据很小，默认跑 3 个 epoch。真实项目应根据验证集决定。
+num_train_epochs: 3
+per_device_train_batch_size: 2
+per_device_eval_batch_size: 4
+gradient_accumulation_steps: 8
+learning_rate: 0.0001
+weight_decay: 0.01
+warmup_ratio: 0.1
+max_length: 256
+seed: 42
+
+# LoRA：冻结基础模型，仅训练低秩适配器。
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
