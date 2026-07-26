@@ -1,49 +1,47 @@
 # AGENTS.md
 
-## Mission
+## 项目使命
 
-This repository is a small, reproducible learning project for closing the full
-supervised fine-tuning loop: define a task, build and validate data, measure a
-base-model baseline, train a LoRA adapter, evaluate it, and run inference.
+本仓库是一个小型、可复现的监督微调学习项目，用来完整走通以下闭环：定义任务、构造并
+校验数据、测量基础模型基线、训练 LoRA 适配器、评测并执行推理。
 
-Keep the project educational, local-first, inexpensive, and easy to inspect.
+始终保持项目适合教学、本地优先、成本可控且容易审查。
 
-## Source map
+## 目录职责
 
-- `README.md`: learner-facing SOP and commands.
-- `specs/`: source of truth for intended behavior and accepted changes.
-- `src/sft_sop/`: data, training, evaluation, metrics, and inference code.
-- `configs/sft_lora.yaml`: reproducible training configuration.
-- `data/`: deterministic generated teaching data.
-- `tests/`: CPU-only fast tests.
+- `README.md`：面向学习者的 SOP 与命令说明。
+- `specs/`：预期行为和已接受变更的事实来源。
+- `src/sft_sop/`：数据、训练、评测、指标与推理代码。
+- `configs/sft_lora.yaml`：可复现的训练配置。
+- `data/`：确定性生成的教学数据。
+- `tests/`：只使用 CPU 的快速测试。
 
-## Spec-driven development
+## 规范驱动开发
 
-For every material behavior change:
+每项实质性行为变更都必须遵循：
 
-1. Read `specs/README.md` and the relevant existing specification.
-2. Create or update `specs/NNN-short-name/spec.md`.
-3. Resolve requirements and acceptance criteria before changing code.
-4. Write `plan.md`, including affected files, risks, and verification.
-5. Write `tasks.md`; every task must reference requirement and acceptance IDs.
-6. Implement tasks in order and keep the checkboxes current.
-7. Run verification and update the artifacts if implementation decisions changed.
+1. 阅读 `specs/README.md` 和相关既有规格。
+2. 创建或更新 `specs/NNN-short-name/spec.md`。
+3. 在修改代码前明确需求与验收标准。
+4. 编写 `plan.md`，说明涉及文件、风险和验证方式。
+5. 编写 `tasks.md`；每个任务都必须引用需求 ID 和验收标准 ID。
+6. 按顺序实现任务，并及时更新复选框。
+7. 执行验证；若实现决策发生变化，同步更新规格文档。
 
-A typo, wording-only documentation edit, or mechanical formatting change may
-update the closest existing spec instead of creating a new feature directory.
-Never change observable behavior first and retrofit a spec afterward.
+拼写修正、仅调整措辞的文档修改或机械格式化，可以更新最接近的既有规格，无需新建
+功能目录。不得先改变可观察行为，再事后补写规格。
 
-## Supported commands
+## 支持的命令
 
 ```bash
-make data       # regenerate deterministic JSONL splits
-make check      # validate data schema, labels, and leakage
-make sdd-check  # validate SDD artifact structure and traceability
-make test       # run fast CPU-only tests
-make lint       # run Ruff
+make data       # 重新生成确定性的 JSONL 数据集
+make check      # 校验数据结构、标签和数据泄漏
+make sdd-check  # 校验 SDD 文档结构与追踪关系
+make test       # 运行仅使用 CPU 的快速测试
+make lint       # 运行 Ruff
 ```
 
-Commands that download a model or use substantial compute are opt-in:
+以下命令会下载模型或使用较多算力，只在明确需要时运行：
 
 ```bash
 make baseline
@@ -52,28 +50,34 @@ make evaluate
 make infer
 ```
 
-Do not run GPU training merely to validate a code or documentation change.
+不得只为验证代码或文档变更而运行 GPU 训练。
 
-## Engineering constraints
+## 工程约束
 
-- Use Python 3.11 unless a spec explicitly changes the supported range.
-- Keep `Qwen/Qwen3-0.6B-Base` as the default teaching model.
-- Keep training compatible with CUDA, Apple MPS, and CPU.
-- Treat `src/sft_sop/build_data.py` as the source of truth for generated data;
-  regenerate JSONL instead of editing generated rows by hand.
-- Do not commit checkpoints, reports, caches, local paths, credentials, personal
-  email addresses, device identifiers, or machine-specific metadata.
-- Preserve assistant-only loss and train/evaluation chat-template consistency.
-- Prefer objective evaluation metrics and held-out test data over anecdotal output.
+- 除非规格明确修改支持范围，否则使用 Python 3.11。
+- 保持 `Qwen/Qwen3-0.6B-Base` 为默认教学模型。
+- 保持训练同时兼容 CUDA、Apple MPS 和 CPU。
+- 将 `src/sft_sop/build_data.py` 视为生成数据的事实来源；应重新生成 JSONL，不要
+  手工修改生成的数据行。
+- 不得提交 checkpoint、报告、缓存、本机路径、凭据、个人邮箱、设备标识或机器特有
+  元数据。
+- 保持仅对 assistant 回复计算损失，并保证训练与评测使用一致的 chat template。
+- 优先使用客观评测指标和留出的测试集，不以少量聊天示例代替评测。
 
-## Definition of done
+## 文档语言
 
-A material change is complete only when:
+- 仓库自有文档、规格、计划、任务和面向用户的说明以简体中文正文为主。
+- 代码标识、命令、路径、模型名、第三方专有名词和机器可读 ID 保留原文。
+- `LICENSE` 保留官方英文原文；中文版本只能作为明确标注的非官方参考译本。
+- 新增规格必须使用 `specs/_template/` 中的中文模板。
 
-- the spec, plan, and tasks agree with the implementation;
-- `make sdd-check`, `make check`, `make test`, and `make lint` pass;
-- learner-facing behavior is reflected in `README.md`;
-- generated data is regenerated when its source changes;
-- no ignored model artifacts or private information are staged;
-- compute-heavy validation is either completed when explicitly requested or
-  clearly recorded as not run.
+## 完成定义
+
+一项实质性变更只有同时满足以下条件才算完成：
+
+- 规格、计划、任务与实现一致；
+- `make sdd-check`、`make check`、`make test` 和 `make lint` 全部通过；
+- 面向学习者的行为已反映在 `README.md` 中；
+- 生成数据的源代码变更后，已重新生成对应数据；
+- 暂存区不含被忽略的模型产物或隐私信息；
+- 需要大量算力的验证仅在明确要求时执行，否则清楚记录为未运行。

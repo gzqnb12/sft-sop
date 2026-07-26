@@ -1,35 +1,35 @@
-# NNN Feature name
+# NNN 功能名称
 
-Status: Draft
+状态：草案
 
-## Context
+## 背景
 
-Describe the user problem and why it matters.
+说明用户遇到的问题，以及解决它的价值。
 
-## Goals
+## 目标
 
-- State the outcomes this change must produce.
+- 列出这项变更必须产生的结果。
 
-## Non-goals
+## 非目标
 
-- State adjacent work that is intentionally excluded.
+- 列出有意排除的相邻工作。
 
-## User stories
+## 用户故事
 
-- As a learner, I want ..., so that ...
+- 作为学习者，我希望……，以便……
 
-## Functional requirements
+## 功能需求
 
-- FR-001: The system must ...
+- FR-001：系统必须……
 
-## Non-functional requirements
+## 非功能需求
 
-- NFR-001: The system must ...
+- NFR-001：系统必须……
 
-## Acceptance criteria
+## 验收标准
 
-- AC-001: Given ..., when ..., then ...
+- AC-001：给定……，当……时，则……
 
-## Open questions
+## 待确认问题
 
-- List decisions that must be resolved before status becomes Accepted.
+- 列出状态变为“已接受”前必须确认的决策。

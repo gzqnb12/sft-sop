@@ -1,59 +1,54 @@
-# 002 Codex-native spec-driven development — implementation plan
+# 002 Codex 原生规范驱动开发——实现计划
 
-Status: Implemented
+状态：已实现
 
-## Approach
+## 实现思路
 
-Use Codex's supported repository guidance surface, `AGENTS.md`, for concise and
-automatically loaded rules. Store detailed, versioned SDD artifacts in `specs/`
-so the root guidance remains practical. Capture the existing code as specification
-001, and capture this initialization itself as specification 002.
+使用 Codex 支持的仓库指导入口 `AGENTS.md`，存放简洁且可自动加载的规则。详细、版本化
+的 SDD 文档放在 `specs/` 中，使根目录指导保持实用。把既有代码记录为规格 001，并把
+本次初始化记录为规格 002。
 
-Add a standard-library validator in the existing Python package. It discovers
-numbered specification directories, checks their three artifacts, and enforces
-basic requirement-to-task traceability. Expose it through the same Makefile and
-package entry-point patterns as the existing data validator.
+在现有 Python 包中增加只依赖标准库的校验器。它发现编号规格目录，检查其中三份文档，
+并执行基本的需求到任务追踪校验。按照既有数据校验器的模式，通过 Makefile 和包入口
+暴露该命令。
 
-## Affected files
+## 涉及文件
 
-- `AGENTS.md`: persistent repository instructions loaded by Codex.
-- `specs/README.md`: detailed SDD lifecycle and conventions.
-- `specs/_template/`: reusable artifact templates.
-- `specs/001-sft-learning-sop/`: brownfield baseline contract.
-- `specs/002-codex-native-sdd/`: contract for this initialization.
-- `src/sft_sop/check_sdd.py`: mechanical structure and traceability checks.
-- `tests/test_sdd.py`: positive and negative validator tests.
-- `Makefile`: `sdd-check` target.
-- `pyproject.toml`: installed `sft-check-sdd` command.
-- `README.md`: learner-facing explanation and links.
+- `AGENTS.md`：由 Codex 加载的持久仓库指导。
+- `specs/README.md`：详细 SDD 生命周期与约定。
+- `specs/_template/`：可复用的文档模板。
+- `specs/001-sft-learning-sop/`：棕地基线契约。
+- `specs/002-codex-native-sdd/`：本次初始化的契约。
+- `src/sft_sop/check_sdd.py`：机械结构与追踪关系检查。
+- `tests/test_sdd.py`：校验器正向与反向测试。
+- `Makefile`：`sdd-check` 目标。
+- `pyproject.toml`：安装后的 `sft-check-sdd` 命令。
+- `README.md`：面向学习者的说明与链接。
 
-## Decisions
+## 关键决策
 
-- Use Codex-native `AGENTS.md` because the request explicitly targets `/init`.
-- Do not install a third-party SDD CLI when no such framework is selected.
-- Keep specifications as Markdown so they remain reviewable in GitHub.
-- Validate a small set of high-value invariants rather than inventing a complex
-  schema or parser.
-- Treat the current implementation as a brownfield baseline, not as a new feature.
+- 请求明确针对 `/init`，因此使用 Codex 原生 `AGENTS.md`。
+- 未选择外部框架时，不安装第三方 SDD CLI。
+- 规格保留为 Markdown，便于在 GitHub 审阅。
+- 只校验少量高价值不变量，不发明复杂的结构或解析器。
+- 将当前实现视为棕地基线，而不是新功能。
 
-## Risks and mitigations
+## 风险与缓解
 
-- Risk: Process documentation drifts from actual behavior.
-  - Mitigation: Keep the baseline specification versioned and require updates in
-    the definition of done.
-- Risk: SDD becomes ceremony for trivial changes.
-  - Mitigation: Allow wording-only and mechanical edits to update the closest
-    existing specification instead of creating a new directory.
-- Risk: Markdown conventions are ignored.
-  - Mitigation: Validate structure, status, IDs, traceability, and completed tasks.
-- Risk: Agent guidance grows too large.
-  - Mitigation: Keep root rules concise and link to `specs/README.md`.
+- 风险：流程文档与实际行为逐渐偏离。
+  - 缓解：对基线规格做版本控制，并在完成定义中要求同步更新。
+- 风险：SDD 对简单变更造成过多仪式。
+  - 缓解：只修改措辞或机械格式时，允许更新最接近的现有规格，无需新建目录。
+- 风险：Markdown 约定被忽略。
+  - 缓解：校验结构、状态、ID、追踪关系和任务完成情况。
+- 风险：代理指导文件持续膨胀。
+  - 缓解：保持根目录规则简洁，并链接到 `specs/README.md`。
 
-## Verification
+## 验证方式
 
-- `make sdd-check`: FR-002, FR-003, FR-004, FR-005, AC-002.
-- `make test`: FR-004, AC-003, AC-004.
-- `make check`: regression coverage for the existing data workflow, AC-004.
-- `make lint`: code-quality regression coverage, AC-004.
-- `sft-check-sdd`: installed CLI smoke test, FR-005.
-- Manual file review: FR-001, AC-001, AC-005.
+- `make sdd-check`：覆盖 FR-002、FR-003、FR-004、FR-005、AC-002。
+- `make test`：覆盖 FR-004、AC-003、AC-004。
+- `make check`：覆盖现有数据工作流的回归验证与 AC-004。
+- `make lint`：覆盖代码质量回归验证与 AC-004。
+- `sft-check-sdd`：对安装后的 CLI 执行冒烟测试，覆盖 FR-005。
+- 人工文件检查：覆盖 FR-001、AC-001、AC-005。

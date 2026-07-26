@@ -1,4 +1,4 @@
-"""Model loading and deterministic generation helpers."""
+"""模型加载与确定性生成辅助函数。"""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def select_dtype(device: str) -> Any:
 
 
 def load_for_inference(model_name: str, adapter: str | Path | None = None) -> tuple[Any, Any, str]:
-    """Load a base model and, optionally, a LoRA adapter."""
+    """加载基础模型和可选的 LoRA 适配器。"""
 
     from peft import PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -43,7 +43,7 @@ def load_for_inference(model_name: str, adapter: str | Path | None = None) -> tu
         adapter_path = Path(adapter)
         if not adapter_path.exists():
             raise FileNotFoundError(
-                f"Adapter not found: {adapter_path}. Run `make train` before evaluating it."
+                f"未找到适配器：{adapter_path}。请先运行 `make train` 再进行评测。"
             )
         model = PeftModel.from_pretrained(model, adapter_path)
 
@@ -59,7 +59,7 @@ def generate_response(
     device: str,
     max_new_tokens: int = 64,
 ) -> str:
-    """Generate one deterministic response from a conversational prompt."""
+    """根据一组对话提示生成一条确定性回复。"""
 
     import torch
 

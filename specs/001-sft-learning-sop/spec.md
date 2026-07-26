@@ -1,79 +1,68 @@
-# 001 End-to-end SFT learning SOP
+# 001 端到端 SFT 学习 SOP
 
-Status: Implemented
+状态：已实现
 
-## Context
+## 背景
 
-A learner needs a small project that demonstrates the complete supervised
-fine-tuning lifecycle without requiring a production dataset, a large model, or
-expensive compute. The project must make the effect of SFT measurable instead
-of relying on subjective chat examples.
+学习者需要一个小项目来演示完整的监督微调生命周期，同时不依赖生产数据集、大模型或
+昂贵算力。项目必须让 SFT 的效果可以被客观测量，而不是只依赖主观聊天示例。
 
-## Goals
+## 目标
 
-- Demonstrate a complete baseline → SFT → evaluation → inference loop.
-- Keep every data and model decision visible in a small codebase.
-- Use objective metrics on a held-out test split.
-- Run on NVIDIA CUDA, Apple MPS, or CPU.
-- Keep normal validation independent of model downloads and GPU training.
+- 演示完整的基线 → SFT → 评测 → 推理闭环。
+- 在小型代码库中清楚呈现每项数据与模型决策。
+- 在独立留出的测试集上使用客观指标。
+- 支持 NVIDIA CUDA、Apple MPS 和 CPU。
+- 让日常验证不依赖模型下载或 GPU 训练。
 
-## Non-goals
+## 非目标
 
-- Producing a production-quality customer-support classifier.
-- Benchmarking different foundation models or tuning for maximum accuracy.
-- Serving the adapter as an online API.
-- Teaching preference optimization or reinforcement learning.
+- 构建生产级客服分类器。
+- 对比不同基础模型或追求最高准确率。
+- 将适配器部署为在线 API。
+- 教授偏好优化或强化学习。
 
-## User stories
+## 用户故事
 
-- As a learner, I want deterministic example data so that I can inspect every
-  training target.
-- As a learner, I want a base-model baseline so that I can attribute changes to
-  SFT instead of prompting.
-- As a learner, I want LoRA training so that I can finish the loop on modest
-  local hardware.
-- As a learner, I want objective reports so that I can compare models and inspect
-  failures.
+- 作为学习者，我希望获得确定性的示例数据，以便检查每个训练目标。
+- 作为学习者，我希望先测量基础模型基线，以便确认变化来自 SFT 而不是提示词。
+- 作为学习者，我希望使用 LoRA 训练，以便在配置适中的本地硬件上走完闭环。
+- 作为学习者，我希望获得客观报告，以便比较模型并检查失败案例。
 
-## Functional requirements
+## 功能需求
 
-- FR-001: The project must deterministically generate 60 training, 15 validation,
-  and 15 test examples in conversational JSONL format.
-- FR-002: The project must reject malformed rows, invalid labels, duplicate IDs,
-  cross-split duplicate prompts, and incomplete label coverage before training.
-- FR-003: The evaluator must run against the base model without an adapter and
-  save per-example predictions plus aggregate metrics.
-- FR-004: The trainer must apply LoRA to `Qwen/Qwen3-0.6B-Base`, compute loss only
-  on assistant tokens, validate each epoch, and save a reusable adapter.
-- FR-005: The evaluator must load the trained adapter and compute JSON validity,
-  schema validity, intent accuracy, urgency accuracy, and joint accuracy.
-- FR-006: The inference command must load the base model plus optional adapter
-  and return raw output, parsed output, and schema validity for one message.
-- FR-007: The README must explain every lifecycle stage, expected artifacts,
-  metrics, resource constraints, and suggested experiments.
+- FR-001：项目必须以确定性方式生成 60 条训练、15 条验证和 15 条测试样本，格式为
+  对话式 JSONL。
+- FR-002：训练前必须拒绝结构错误的数据行、非法标签、重复 ID、跨数据集重复提示词
+  以及标签覆盖不完整的数据。
+- FR-003：评测器必须能在不加载适配器的情况下评测基础模型，并保存逐样本预测和汇总
+  指标。
+- FR-004：训练器必须对 `Qwen/Qwen3-0.6B-Base` 应用 LoRA，只在 assistant token 上
+  计算损失，每个 epoch 执行验证，并保存可复用的适配器。
+- FR-005：评测器必须加载训练后的适配器，并计算 JSON 有效率、结构有效率、意图准确率、
+  紧急程度准确率和联合准确率。
+- FR-006：推理命令必须加载基础模型和可选适配器，并针对一条消息返回原始输出、解析
+  输出与结构有效性。
+- FR-007：README 必须解释各生命周期阶段、预期产物、指标、资源限制和建议实验。
 
-## Non-functional requirements
+## 非功能需求
 
-- NFR-001: CPU-only data checks, unit tests, and linting must finish without
-  downloading a model.
-- NFR-002: The default experiment must remain teaching-scale: a 0.6B model,
-  256-token maximum length, LoRA, and a small deterministic dataset.
-- NFR-003: Checkpoints, reports, environments, caches, credentials, personal
-  identifiers, and machine metadata must not be committed.
-- NFR-004: Dependency versions must be reproducible through `uv.lock`.
+- NFR-001：只使用 CPU 的数据检查、单元测试和 lint 必须在不下载模型的情况下完成。
+- NFR-002：默认实验必须保持教学规模：0.6B 模型、最大 256 token、LoRA 和小型确定性
+  数据集。
+- NFR-003：不得提交 checkpoint、报告、环境目录、缓存、凭据、个人标识和机器元数据。
+- NFR-004：依赖版本必须通过 `uv.lock` 保持可复现。
 
-## Acceptance criteria
+## 验收标准
 
-- AC-001: `make data` produces exactly 60/15/15 examples and `make check` passes.
-- AC-002: `make test` passes all CPU-only data and metric tests.
-- AC-003: `make lint` completes with no Ruff errors.
-- AC-004: `make baseline` writes a baseline report containing all five documented
-  metrics and individual predictions.
-- AC-005: `make train` saves a LoRA adapter without merging or overwriting the
-  base model.
-- AC-006: `make evaluate` loads that adapter and writes a comparable test report.
-- AC-007: `make infer` produces a parseable result object for a supplied message.
+- AC-001：`make data` 恰好生成 60/15/15 条样本，且 `make check` 通过。
+- AC-002：`make test` 通过全部仅使用 CPU 的数据和指标测试。
+- AC-003：`make lint` 完成且无 Ruff 错误。
+- AC-004：`make baseline` 写出包含五项文档化指标和逐样本预测的基线报告。
+- AC-005：`make train` 保存 LoRA 适配器，且不合并或覆盖基础模型。
+- AC-006：`make evaluate` 加载该适配器并写出可与基线比较的测试报告。
+- AC-007：`make infer` 针对给定消息生成可解析的结果对象。
 
-## Open questions
+## 待确认问题
 
-None for the implemented baseline.
+已实现的基线暂无待确认问题。

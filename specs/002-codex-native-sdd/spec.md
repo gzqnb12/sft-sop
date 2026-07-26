@@ -1,71 +1,63 @@
-# 002 Codex-native spec-driven development
+# 002 Codex 原生规范驱动开发
 
-Status: Implemented
+状态：已实现
 
-## Context
+## 背景
 
-The repository has a working educational implementation but no durable contract
-for how future AI-assisted changes should move from intent to verified code.
-Codex `/init` provides a repository-level `AGENTS.md` scaffold, but a complete
-lightweight SDD loop also needs versioned specifications, plans, tasks, and
-traceability checks.
+仓库已有可运行的教学实现，但缺少一份持久契约，用来约束后续 AI 辅助变更如何从意图
+推进到验证过的代码。Codex `/init` 提供仓库级 `AGENTS.md` 脚手架，但完整的轻量 SDD
+闭环还需要版本化的规格、计划、任务与追踪校验。
 
-## Goals
+## 目标
 
-- Make the repository's development process spec-driven by default.
-- Keep the workflow understandable without installing another SDD framework.
-- Capture the existing SFT project as a brownfield baseline specification.
-- Mechanically detect missing artifacts and broken requirement traceability.
+- 让仓库开发流程默认由规格驱动。
+- 无需安装其他 SDD 框架也能理解和使用该工作流。
+- 将现有 SFT 项目记录为棕地基线规格。
+- 通过机械校验发现缺失文档和断裂的需求追踪关系。
 
-## Non-goals
+## 非目标
 
-- Installing or emulating GitHub Spec Kit, OpenSpec, or another external CLI.
-- Generating implementation code from specifications automatically.
-- Requiring GPU training for ordinary specification validation.
-- Adding heavyweight policy or CI infrastructure.
+- 安装或模拟 GitHub Spec Kit、OpenSpec 或其他外部 CLI。
+- 根据规格自动生成实现代码。
+- 为日常规格校验运行 GPU 训练。
+- 增加重量级策略或 CI 基础设施。
 
-## User stories
+## 用户故事
 
-- As a maintainer, I want Codex to load the SDD rules automatically so that new
-  sessions follow the same workflow.
-- As a learner, I want templates and a real baseline example so that I know how
-  to write the next specification.
-- As a reviewer, I want mechanical traceability checks so that requirements are
-  not silently omitted from implementation tasks.
+- 作为维护者，我希望 Codex 自动加载 SDD 规则，以便新会话遵循同一套工作流。
+- 作为学习者，我希望看到模板和真实基线示例，以便知道如何编写下一份规格。
+- 作为审阅者，我希望机械校验追踪关系，以免需求被静默遗漏在实现任务之外。
 
-## Functional requirements
+## 功能需求
 
-- FR-001: The repository must contain a concise root `AGENTS.md` with its mission,
-  source map, SDD lifecycle, commands, constraints, and definition of done.
-- FR-002: The `specs/` directory must document naming, statuses, ID conventions,
-  lifecycle stages, and reusable `spec.md`, `plan.md`, and `tasks.md` templates.
-- FR-003: The existing SFT learning behavior must be represented by a numbered,
-  implemented baseline specification with requirements, acceptance criteria,
-  implementation decisions, verification, and completed tasks.
-- FR-004: A CPU-only validator must reject missing artifacts, invalid statuses,
-  absent IDs, duplicate task IDs, untraced requirements or acceptance criteria,
-  missing verification plans, and open tasks on implemented specifications.
-- FR-005: The validator must be available through `make sdd-check` and an installed
-  `sft-check-sdd` command, and the README must explain the SDD workflow.
+- FR-001：仓库根目录必须包含简洁的 `AGENTS.md`，说明使命、目录职责、SDD 生命周期、
+  命令、约束与完成定义。
+- FR-002：`specs/` 目录必须说明命名、状态、ID 约定和生命周期，并提供可复用的
+  `spec.md`、`plan.md` 与 `tasks.md` 模板。
+- FR-003：现有 SFT 学习行为必须由一份带编号且状态为已实现的基线规格表示，其中包含
+  需求、验收标准、实现决策、验证方式和已完成任务。
+- FR-004：只使用 CPU 的校验器必须拒绝缺失文档、非法状态、缺少 ID、重复任务 ID、
+  未追踪需求或验收标准、缺少验证计划，以及已实现规格中的未完成任务。
+- FR-005：校验器必须通过 `make sdd-check` 和安装后的 `sft-check-sdd` 命令使用，
+  README 必须解释 SDD 工作流。
 
-## Non-functional requirements
+## 非功能需求
 
-- NFR-001: SDD validation must use only the Python standard library.
-- NFR-002: SDD validation must not download models or access a GPU.
-- NFR-003: Instructions must remain short enough for Codex project guidance and
-  link to detailed artifacts instead of duplicating them.
-- NFR-004: The workflow must remain usable by humans and tools other than Codex.
+- NFR-001：SDD 校验只能使用 Python 标准库。
+- NFR-002：SDD 校验不得下载模型或访问 GPU。
+- NFR-003：说明必须足够简洁，适合作为 Codex 项目指导；详细内容通过链接引用，避免
+  重复。
+- NFR-004：除 Codex 外，人类与其他工具也必须能够使用该工作流。
 
-## Acceptance criteria
+## 验收标准
 
-- AC-001: A new Codex session opened at the Git root discovers `AGENTS.md`.
-- AC-002: `make sdd-check` validates every numbered specification successfully.
-- AC-003: Automated tests prove the validator reports missing FR/AC task links.
-- AC-004: `make check`, `make test`, and `make lint` continue to pass without GPU
-  or model downloads.
-- AC-005: The README links to `AGENTS.md`, `specs/README.md`, templates, and the
-  SDD validation command.
+- AC-001：在 Git 根目录打开的新 Codex 会话能够发现 `AGENTS.md`。
+- AC-002：`make sdd-check` 成功校验每一份编号规格。
+- AC-003：自动化测试证明校验器能够报告缺失的 FR/AC 任务链接。
+- AC-004：`make check`、`make test` 和 `make lint` 在不使用 GPU 或下载模型时仍然
+  通过。
+- AC-005：README 链接到 `AGENTS.md`、`specs/README.md`、模板和 SDD 校验命令。
 
-## Open questions
+## 待确认问题
 
-None for the lightweight Codex-native workflow.
+轻量 Codex 原生工作流暂无待确认问题。

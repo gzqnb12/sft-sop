@@ -1,4 +1,4 @@
-"""Pure-Python output parsing and task metrics."""
+"""仅使用 Python 的输出解析与任务指标。"""
 
 from __future__ import annotations
 
@@ -9,11 +9,10 @@ from sft_sop.constants import INTENTS, URGENCIES
 
 
 def parse_json_output(text: str) -> dict[str, Any] | None:
-    """Parse a model response while tolerating common wrappers.
+    """解析模型回复，同时容忍常见的外层包装。
 
-    The evaluator reports strict schema validity separately, so extraction here
-    is deliberately forgiving: it lets us see whether a model knew the answer
-    but added Markdown or reasoning around it.
+    评测器会单独报告严格的 schema 有效性，因此这里有意采用宽松提取：借此区分模型
+    不知道答案，还是知道答案但在外层添加了 Markdown 或推理。
     """
 
     cleaned = text.strip()
@@ -38,7 +37,7 @@ def parse_json_output(text: str) -> dict[str, Any] | None:
 
 
 def is_valid_schema(value: dict[str, Any] | None) -> bool:
-    """Return whether an object exactly matches the task schema."""
+    """返回对象是否严格符合任务 schema。"""
 
     if value is None or set(value) != {"intent", "urgency"}:
         return False
@@ -46,11 +45,11 @@ def is_valid_schema(value: dict[str, Any] | None) -> bool:
 
 
 def compute_metrics(rows: list[dict[str, Any]]) -> dict[str, float | int]:
-    """Aggregate generated predictions against references."""
+    """汇总生成预测相对于参考答案的指标。"""
 
     total = len(rows)
     if total == 0:
-        raise ValueError("Cannot score an empty prediction set.")
+        raise ValueError("不能对空预测集评分。")
 
     json_valid = 0
     schema_valid = 0

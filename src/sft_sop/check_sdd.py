@@ -1,4 +1,4 @@
-"""Validate SDD artifact structure and requirement-to-task traceability."""
+"""校验 SDD 文档结构，以及需求到任务的追踪关系。"""
 
 from __future__ import annotations
 
@@ -11,26 +11,49 @@ REQUIREMENT_ID = re.compile(r"\bFR-\d{3}\b")
 ACCEPTANCE_ID = re.compile(r"\bAC-\d{3}\b")
 TASK_ID = re.compile(r"\bT-\d{3}\b")
 STATUS = re.compile(
-    r"^Status: (Draft|Accepted|In Progress|Implemented|Superseded)$",
+    r"^(?:"
+    r"状态：(?P<zh>草案|已接受|进行中|已实现|已取代)"
+    r"|Status: (?P<en>Draft|Accepted|In Progress|Implemented|Superseded)"
+    r")$",
     re.MULTILINE,
 )
+STATUS_ALIASES = {
+    "草案": "Draft",
+    "已接受": "Accepted",
+    "进行中": "In Progress",
+    "已实现": "Implemented",
+    "已取代": "Superseded",
+    "Draft": "Draft",
+    "Accepted": "Accepted",
+    "In Progress": "In Progress",
+    "Implemented": "Implemented",
+    "Superseded": "Superseded",
+}
 REQUIRED_ARTIFACTS = ("spec.md", "plan.md", "tasks.md")
+
+
+def _status(text: str) -> str | None:
+    match = STATUS.search(text)
+    if not match:
+        return None
+    value = match.group("zh") or match.group("en")
+    return STATUS_ALIASES[value]
 
 
 def _read(path: Path, errors: list[str]) -> str:
     if not path.exists():
-        errors.append(f"{path}: missing required artifact")
+        errors.append(f"{path}：缺少必需文档")
         return ""
     text = path.read_text(encoding="utf-8")
     if not STATUS.search(text):
-        errors.append(f"{path}: missing or invalid Status line")
+        errors.append(f"{path}：缺少状态行或状态值无效")
     return text
 
 
 def validate_feature(feature_dir: Path) -> list[str]:
     errors: list[str] = []
     if not FEATURE_NAME.fullmatch(feature_dir.name):
-        return [f"{feature_dir}: directory name must match NNN-lowercase-kebab-case"]
+        return [f"{feature_dir}：目录名必须符合 NNN-lowercase-kebab-case"]
 
     artifacts = {
         name: _read(feature_dir / name, errors) for name in REQUIRED_ARTIFACTS
@@ -44,39 +67,39 @@ def validate_feature(feature_dir: Path) -> list[str]:
     task_ids = TASK_ID.findall(tasks_text)
 
     if not requirement_ids:
-        errors.append(f"{feature_dir / 'spec.md'}: no FR-NNN requirement IDs found")
+        errors.append(f"{feature_dir / 'spec.md'}：未找到 FR-NNN 功能需求 ID")
     if not acceptance_ids:
-        errors.append(f"{feature_dir / 'spec.md'}: no AC-NNN acceptance IDs found")
+        errors.append(f"{feature_dir / 'spec.md'}：未找到 AC-NNN 验收标准 ID")
     if not task_ids:
-        errors.append(f"{feature_dir / 'tasks.md'}: no T-NNN task IDs found")
+        errors.append(f"{feature_dir / 'tasks.md'}：未找到 T-NNN 任务 ID")
     if len(task_ids) != len(set(task_ids)):
-        errors.append(f"{feature_dir / 'tasks.md'}: duplicate task IDs found")
+        errors.append(f"{feature_dir / 'tasks.md'}：发现重复任务 ID")
 
     for requirement_id in sorted(requirement_ids):
         if requirement_id not in tasks_text:
             errors.append(
-                f"{feature_dir / 'tasks.md'}: {requirement_id} is not traced to a task"
+                f"{feature_dir / 'tasks.md'}：{requirement_id} 未追踪到任何任务"
             )
     for acceptance_id in sorted(acceptance_ids):
         if acceptance_id not in tasks_text:
             errors.append(
-                f"{feature_dir / 'tasks.md'}: {acceptance_id} is not traced to a task"
+                f"{feature_dir / 'tasks.md'}：{acceptance_id} 未追踪到任何任务"
             )
 
-    if "## Verification" not in plan_text:
-        errors.append(f"{feature_dir / 'plan.md'}: missing ## Verification section")
+    if "## 验证方式" not in plan_text and "## Verification" not in plan_text:
+        errors.append(f"{feature_dir / 'plan.md'}：缺少“验证方式”章节")
 
-    spec_status = STATUS.search(spec_text)
-    tasks_status = STATUS.search(tasks_text)
+    spec_status = _status(spec_text)
+    tasks_status = _status(tasks_text)
     if (
         spec_status
         and tasks_status
-        and spec_status.group(1) == "Implemented"
-        and tasks_status.group(1) != "Implemented"
+        and spec_status == "Implemented"
+        and tasks_status != "Implemented"
     ):
-        errors.append(f"{feature_dir}: implemented spec requires implemented task status")
-    if spec_status and spec_status.group(1) == "Implemented" and "- [ ]" in tasks_text:
-        errors.append(f"{feature_dir / 'tasks.md'}: implemented spec has open tasks")
+        errors.append(f"{feature_dir}：已实现规格要求任务文档状态同为已实现")
+    if spec_status == "Implemented" and "- [ ]" in tasks_text:
+        errors.append(f"{feature_dir / 'tasks.md'}：已实现规格仍有未完成任务")
 
     return errors
 
@@ -84,9 +107,9 @@ def validate_feature(feature_dir: Path) -> list[str]:
 def validate_specs(specs_dir: Path) -> list[str]:
     errors: list[str] = []
     if not specs_dir.exists():
-        return [f"{specs_dir}: directory does not exist"]
+        return [f"{specs_dir}：目录不存在"]
     if not (specs_dir / "README.md").exists():
-        errors.append(f"{specs_dir / 'README.md'}: missing SDD workflow documentation")
+        errors.append(f"{specs_dir / 'README.md'}：缺少 SDD 工作流说明")
 
     feature_dirs = sorted(
         path
@@ -94,7 +117,7 @@ def validate_specs(specs_dir: Path) -> list[str]:
         if path.is_dir() and not path.name.startswith(("_", "."))
     )
     if not feature_dirs:
-        errors.append(f"{specs_dir}: no numbered feature specifications found")
+        errors.append(f"{specs_dir}：未找到带编号的功能规格")
     for feature_dir in feature_dirs:
         errors.extend(validate_feature(feature_dir))
     return errors
@@ -110,7 +133,7 @@ def main() -> None:
     args = build_parser().parse_args()
     errors = validate_specs(args.specs_dir)
     if errors:
-        print("SDD check failed:")
+        print("SDD 校验失败：")
         for error in errors:
             print(f"- {error}")
         raise SystemExit(1)
@@ -119,7 +142,7 @@ def main() -> None:
         path.is_dir() and FEATURE_NAME.fullmatch(path.name) is not None
         for path in args.specs_dir.iterdir()
     )
-    print(f"SDD check passed: {feature_count} feature specification(s) validated.")
+    print(f"SDD 校验通过：已验证 {feature_count} 份功能规格。")
 
 
 if __name__ == "__main__":

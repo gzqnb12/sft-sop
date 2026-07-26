@@ -1,12 +1,12 @@
-# 002 Codex-native spec-driven development — tasks
+# 002 Codex 原生规范驱动开发——任务
 
-Status: Implemented
+状态：已实现
 
-- [x] T-001 [FR-001] [AC-001] Add concise repository-level Codex guidance.
-- [x] T-002 [FR-002] [AC-002] Add lifecycle documentation and artifact templates.
-- [x] T-003 [FR-003] [AC-002] Capture the implemented SFT workflow as baseline 001.
-- [x] T-004 [FR-004] [AC-002] Implement SDD structure and traceability validation.
-- [x] T-005 [FR-004] [AC-003] Test valid specs and broken FR/AC traceability.
-- [x] T-006 [FR-005] [AC-002] Expose Makefile and installed CLI commands.
-- [x] T-007 [FR-005] [AC-005] Document Codex-native SDD in the README.
-- [x] T-008 [FR-001] [FR-002] [AC-004] Run data, SDD, test, and lint verification.
+- [x] T-001 [FR-001] [AC-001] 增加简洁的仓库级 Codex 指导。
+- [x] T-002 [FR-002] [AC-002] 增加生命周期说明和文档模板。
+- [x] T-003 [FR-003] [AC-002] 将已实现的 SFT 工作流记录为基线 001。
+- [x] T-004 [FR-004] [AC-002] 实现 SDD 结构与追踪关系校验。
+- [x] T-005 [FR-004] [AC-003] 测试有效规格与断裂的 FR/AC 追踪关系。
+- [x] T-006 [FR-005] [AC-002] 暴露 Makefile 和安装后的 CLI 命令。
+- [x] T-007 [FR-005] [AC-005] 在 README 中说明 Codex 原生 SDD。
+- [x] T-008 [FR-001] [FR-002] [AC-004] 执行数据、SDD、测试与 lint 验证。

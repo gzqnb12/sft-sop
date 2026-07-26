@@ -1,3 +1,3 @@
-"""A compact supervised fine-tuning SOP project."""
+"""一个紧凑的监督微调 SOP 项目。"""
 
 __version__ = "0.1.0"

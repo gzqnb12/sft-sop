@@ -1,24 +1,23 @@
-# SDD workflow
+# SDD 工作流
 
-`specs/` is the source of truth for what this repository is intended to do.
-Code implements an accepted specification; code is not the specification.
+`specs/` 是本仓库预期行为的事实来源。代码负责实现已接受的规格，但代码本身不等于
+规格。
 
-## Lifecycle
+## 生命周期
 
 ```text
-Spec → Plan → Tasks → Implement → Verify → Update spec if reality changed
+规格 → 计划 → 任务 → 实现 → 验证 → 若实际情况变化则更新规格
 ```
 
-1. **Spec** defines the problem, goals, requirements, constraints, and measurable
-   acceptance criteria without prescribing implementation details.
-2. **Plan** records architecture, file-level changes, risks, decisions, and the
-   verification strategy.
-3. **Tasks** decomposes the plan into ordered, checkable work. Each task traces
-   to at least one `FR-NNN` requirement and one `AC-NNN` acceptance criterion.
-4. **Implement** changes code and keeps task checkboxes accurate.
-5. **Verify** runs the commands named by the plan and records intentional gaps.
+1. **规格（Spec）**定义问题、目标、需求、约束和可测量的验收标准，不预先限定实现
+   细节。
+2. **计划（Plan）**记录架构、文件级变更、风险、决策与验证策略。
+3. **任务（Tasks）**把计划拆成有序、可勾选的工作。每个任务至少追踪一个
+   `FR-NNN` 功能需求和一个 `AC-NNN` 验收标准。
+4. **实现（Implement）**修改代码，并保持任务复选框状态准确。
+5. **验证（Verify）**执行计划中列出的命令，并记录有意未执行的验证。
 
-## Directory convention
+## 目录约定
 
 ```text
 specs/
@@ -33,28 +32,36 @@ specs/
     └── tasks.md
 ```
 
-- Use the next unused three-digit number.
-- Use lowercase kebab-case after the number.
-- One directory represents one coherent behavior change.
-- Update an existing specification when refining its existing contract.
-- Create a new specification when introducing a new capability or changing a
-  previously accepted contract.
+- 使用下一个尚未占用的三位数字编号。
+- 编号后的目录名使用小写 kebab-case。
+- 一个目录只表示一项边界清晰、内聚的行为变更。
+- 细化既有契约时，更新对应的现有规格。
+- 引入新能力或修改已接受契约时，创建新规格。
 
-## Status values
+## 状态值
 
-Use one status at the top of each artifact:
+每份文档顶部必须使用一个状态：
 
-- `Draft`: still being clarified.
-- `Accepted`: ready to implement.
-- `In Progress`: implementation has started.
-- `Implemented`: acceptance criteria have been verified.
-- `Superseded`: replaced by another explicitly linked specification.
+- `草案`：仍在澄清。
+- `已接受`：可以开始实现。
+- `进行中`：实现已经开始。
+- `已实现`：验收标准已经验证。
+- `已取代`：已被另一份明确链接的规格替代。
 
-## IDs and traceability
+统一写作 `状态：已接受`。校验器仍兼容历史英文格式，例如 `Status: Accepted`，但新文档
+必须优先使用中文格式。
 
-- Functional requirements: `FR-001`, `FR-002`, …
-- Non-functional requirements: `NFR-001`, `NFR-002`, …
-- Acceptance criteria: `AC-001`, `AC-002`, …
-- Tasks: `T-001`, `T-002`, …
+## ID 与追踪关系
 
-Run `make sdd-check` before implementation and before committing.
+- 功能需求：`FR-001`、`FR-002`……
+- 非功能需求：`NFR-001`、`NFR-002`……
+- 验收标准：`AC-001`、`AC-002`……
+- 任务：`T-001`、`T-002`……
+
+## 文档语言
+
+- 仓库自有规格、计划、任务和说明以简体中文正文为主。
+- 命令、路径、代码标识、第三方专有名词和机器可读 ID 可以保留英文。
+- `LICENSE` 的官方英文文本不翻译覆盖；中文版本只能作为参考译本。
+
+在开始实现前和提交前都运行 `make sdd-check`。

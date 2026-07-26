@@ -1,4 +1,4 @@
-"""Run one interactive-style prediction with the base model or LoRA adapter."""
+"""使用基础模型或 LoRA 适配器执行一次交互式预测。"""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="Qwen/Qwen3-0.6B-Base")
     parser.add_argument("--adapter", type=Path)
-    parser.add_argument("--text", required=True, help="Raw customer message.")
+    parser.add_argument("--text", required=True, help="原始客户消息。")
     parser.add_argument("--max-new-tokens", type=int, default=64)
     return parser
 

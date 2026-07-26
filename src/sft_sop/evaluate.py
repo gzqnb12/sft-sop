@@ -1,4 +1,4 @@
-"""Evaluate the base model or a trained LoRA adapter on a held-out split."""
+"""在独立数据集上评测基础模型或训练后的 LoRA 适配器。"""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def evaluate(
     if limit is not None:
         examples = examples[:limit]
     if not examples:
-        raise ValueError("No evaluation examples selected.")
+        raise ValueError("没有选中任何评测样本。")
 
     model, tokenizer, device = load_for_inference(model_name, adapter)
     predictions: list[dict[str, Any]] = []
@@ -92,9 +92,9 @@ def main() -> None:
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print("\nMetrics")
+    print("\n评测指标")
     print(json.dumps(result["metrics"], ensure_ascii=False, indent=2))
-    print(f"Full report -> {args.report}")
+    print(f"完整报告 -> {args.report}")
 
 
 if __name__ == "__main__":

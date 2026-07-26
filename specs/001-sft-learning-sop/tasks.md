@@ -1,13 +1,13 @@
-# 001 End-to-end SFT learning SOP — tasks
+# 001 端到端 SFT 学习 SOP——任务
 
-Status: Implemented
+状态：已实现
 
-- [x] T-001 [FR-001] [AC-001] Build deterministic conversational data splits.
-- [x] T-002 [FR-002] [AC-001] Add data schema, leakage, and coverage checks.
-- [x] T-003 [FR-003] [AC-004] Add reproducible base-model evaluation reports.
-- [x] T-004 [FR-004] [AC-005] Implement assistant-only LoRA SFT.
-- [x] T-005 [FR-005] [AC-004] [AC-006] Add shared task metrics and adapter evaluation.
-- [x] T-006 [FR-006] [AC-007] Add one-message inference and structured output.
-- [x] T-007 [FR-007] [AC-001] [AC-002] [AC-003] Document the complete SOP.
-- [x] T-008 [FR-001] [FR-002] [AC-001] [AC-002] Add fast data and metric tests.
-- [x] T-009 [FR-004] [FR-005] [AC-003] Pin and validate current training APIs.
+- [x] T-001 [FR-001] [AC-001] 构造确定性的对话数据集。
+- [x] T-002 [FR-002] [AC-001] 增加数据结构、泄漏与覆盖检查。
+- [x] T-003 [FR-003] [AC-004] 增加可复现的基础模型评测报告。
+- [x] T-004 [FR-004] [AC-005] 实现仅计算 assistant 损失的 LoRA SFT。
+- [x] T-005 [FR-005] [AC-004] [AC-006] 增加共用任务指标和适配器评测。
+- [x] T-006 [FR-006] [AC-007] 增加单条消息推理与结构化输出。
+- [x] T-007 [FR-007] [AC-001] [AC-002] [AC-003] 记录完整 SOP。
+- [x] T-008 [FR-001] [FR-002] [AC-001] [AC-002] 增加快速数据和指标测试。
+- [x] T-009 [FR-004] [FR-005] [AC-003] 固定并验证当前训练 API。

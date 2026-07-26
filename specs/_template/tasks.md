@@ -1,7 +1,7 @@
-# NNN Feature name — tasks
+# NNN 功能名称——任务
 
-Status: Draft
+状态：草案
 
-- [ ] T-001 [FR-001] [AC-001] Implement the smallest verifiable change.
-- [ ] T-002 [FR-001] [AC-001] Add or update automated verification.
-- [ ] T-003 [FR-001] [AC-001] Update learner-facing documentation.
+- [ ] T-001 [FR-001] [AC-001] 实现最小可验证变更。
+- [ ] T-002 [FR-001] [AC-001] 新增或更新自动化验证。
+- [ ] T-003 [FR-001] [AC-001] 更新面向学习者的文档。

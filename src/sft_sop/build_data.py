@@ -1,8 +1,7 @@
-"""Build a deterministic toy dataset for the SFT walkthrough.
+"""为 SFT 教学流程构造确定性的玩具数据集。
 
-The examples are synthetic and intentionally small. Different utterances and
-prompt wrappers are reserved for each split so that the test set is not an
-exact copy of training templates.
+示例均为合成数据，且刻意保持较小规模。每个数据集使用不同的表述和提示包装，避免
+测试集成为训练模板的完全副本。
 """
 
 from __future__ import annotations
@@ -158,7 +157,7 @@ PROMPT_TEMPLATES = {
 
 
 def build_records() -> dict[str, list[dict[str, Any]]]:
-    """Return train/validation/test records."""
+    """返回 train、validation 和 test 数据行。"""
 
     records: dict[str, list[dict[str, Any]]] = {
         "train": [],
@@ -205,7 +204,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-dir",
         type=Path,
         default=Path("data"),
-        help="Directory for train.jsonl, validation.jsonl and test.jsonl.",
+        help="保存 train.jsonl、validation.jsonl 和 test.jsonl 的目录。",
     )
     return parser
 
@@ -216,7 +215,7 @@ def main() -> None:
     for split, rows in records.items():
         path = args.output_dir / f"{split}.jsonl"
         write_jsonl(path, rows)
-        print(f"{split:>10}: {len(rows):>3} examples -> {path}")
+        print(f"{split:>10}: {len(rows):>3} 条样本 -> {path}")
 
 
 if __name__ == "__main__":

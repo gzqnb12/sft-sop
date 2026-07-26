@@ -1,7 +1,6 @@
-"""Shared task definition.
+"""共享任务定义。
 
-Keeping the schema in one place prevents training and evaluation from silently
-using different label spaces.
+将 schema 集中在一个位置，避免训练和评测静默使用不同的标签空间。
 """
 
 INTENTS = ("refund", "logistics", "account", "invoice", "product")

@@ -1,64 +1,61 @@
-# 001 End-to-end SFT learning SOP — implementation plan
+# 001 端到端 SFT 学习 SOP——实现计划
 
-Status: Implemented
+状态：已实现
 
-## Approach
+## 实现思路
 
-Use a deterministic synthetic customer-ticket task with two categorical output
-fields. Keep data construction, validation, training, generation, parsing, and
-metrics as separate modules so each stage can be read and tested independently.
+使用一个确定性的合成客服工单任务，输出包含两个分类字段。将数据构造、校验、训练、
+生成、解析和指标拆分为独立模块，使每个阶段都可以单独阅读和测试。
 
-Use a Qwen3 0.6B base model to make instruction-following improvement visible.
-Apply LoRA through PEFT and TRL, with assistant-only loss. Use the same chat
-template options during training and inference. Detect CUDA, MPS, or CPU at
-runtime and avoid quantization in the first learning project.
+使用 Qwen3 0.6B 基础模型，让指令遵循能力的提升更容易观察。通过 PEFT 和 TRL 应用
+LoRA，并只对 assistant 回复计算损失。训练与推理使用相同的 chat template 选项。
+运行时自动检测 CUDA、MPS 或 CPU；第一个学习项目不使用量化。
 
-## Architecture
+## 架构
 
 ```text
-build_data → JSONL splits → check_data
+build_data → JSONL 数据集 → check_data
                               ↓
-base model → evaluate → baseline report
+基础模型 → evaluate → 基线报告
      ↓
-SFTTrainer + LoRA → adapter → evaluate → fine-tuned report
-                                  ↓
-                                infer
+SFTTrainer + LoRA → 适配器 → evaluate → 微调后报告
+                                     ↓
+                                   infer
 ```
 
-## Affected files
+## 涉及文件
 
-- `src/sft_sop/build_data.py`: deterministic examples and splits.
-- `src/sft_sop/check_data.py`: pre-training data gate.
-- `src/sft_sop/train.py`: configuration loading and LoRA SFT.
-- `src/sft_sop/modeling.py`: device selection and deterministic generation.
-- `src/sft_sop/evaluate.py`: held-out evaluation and report generation.
-- `src/sft_sop/infer.py`: single-message inference.
-- `src/sft_sop/metrics.py`: parsing and objective metrics.
-- `configs/sft_lora.yaml`: reproducible experiment configuration.
-- `README.md`: learner-facing SOP.
+- `src/sft_sop/build_data.py`：生成确定性样本和数据集。
+- `src/sft_sop/check_data.py`：训练前数据门禁。
+- `src/sft_sop/train.py`：加载配置并执行 LoRA SFT。
+- `src/sft_sop/modeling.py`：选择设备并执行确定性生成。
+- `src/sft_sop/evaluate.py`：独立测试集评测与报告生成。
+- `src/sft_sop/infer.py`：单条消息推理。
+- `src/sft_sop/metrics.py`：结果解析与客观指标。
+- `configs/sft_lora.yaml`：可复现的实验配置。
+- `README.md`：面向学习者的 SOP。
 
-## Decisions
+## 关键决策
 
-- Use a base model instead of an instruct model to expose the effect of SFT.
-- Use LoRA instead of full fine-tuning to reduce memory and checkpoint size.
-- Avoid QLoRA in the first project so CUDA, MPS, and CPU share one path.
-- Generate small synthetic data so no private source data enters the repository.
-- Keep baseline and adapter evaluation on the same held-out test set.
-- Do not run GPU training as part of ordinary automated verification.
+- 使用基础模型而不是指令模型，以便体现 SFT 的作用。
+- 使用 LoRA 而不是全参数微调，以减少内存占用和 checkpoint 大小。
+- 第一个项目不使用 QLoRA，使 CUDA、MPS 和 CPU 共用一条代码路径。
+- 生成小型合成数据，避免私有源数据进入仓库。
+- 在同一独立测试集上评测基础模型和适配器。
+- 日常自动化验证不运行 GPU 训练。
 
-## Risks and mitigations
+## 风险与缓解
 
-- Risk: The synthetic task is too easy to represent real-world data work.
-  - Mitigation: Document that it teaches mechanics, not production quality.
-- Risk: Template leakage inflates metrics.
-  - Mitigation: Reserve utterances and prompt wrappers by split and check exact
-    cross-split duplicates.
-- Risk: TRL chat-template behavior changes across versions.
-  - Mitigation: Lock dependencies and test current configuration construction.
-- Risk: Learners mistake training loss for task quality.
-  - Mitigation: Require objective test metrics and per-example error inspection.
+- 风险：合成任务过于简单，无法代表真实数据工作。
+  - 缓解：明确说明项目教授的是机制，而不是生产质量。
+- 风险：模板泄漏导致指标虚高。
+  - 缓解：按数据集保留不同表述和提示包装，并检查跨数据集的完全重复。
+- 风险：TRL 的 chat template 行为随版本变化。
+  - 缓解：锁定依赖，并测试当前训练配置的构造过程。
+- 风险：学习者把训练损失误认为任务质量。
+  - 缓解：要求使用客观测试指标并逐样本检查错误。
 
-## Verification
+## 验证方式
 
 - `make data && make check`: FR-001, FR-002, AC-001.
 - `make test`: NFR-001, AC-002.
@@ -67,4 +64,4 @@ SFTTrainer + LoRA → adapter → evaluate → fine-tuned report
 - `make train`: FR-004, AC-005.
 - `make evaluate`: FR-005, AC-006.
 - `make infer`: FR-006, AC-007.
-- README review: FR-007 and teaching clarity.
+- README 人工检查：覆盖 FR-007 和教学清晰度。

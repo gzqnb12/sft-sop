@@ -11,7 +11,7 @@
 
 项目重点不是追求业务效果，而是亲手走通一套可以迁移到其他任务的 SFT SOP。
 
-## Codex-native SDD
+## Codex 原生 SDD
 
 本仓库已经按照 Codex `/init` 的目标初始化了根目录
 [`AGENTS.md`](AGENTS.md)，并将开发流程固定为：
@@ -25,7 +25,9 @@ Spec → Plan → Tasks → Implement → Verify
 ```text
 specs/
 ├── _template/                 # 新变更的 spec/plan/tasks 模板
-└── 001-sft-learning-sop/      # 当前实现的可追踪基线
+├── 001-sft-learning-sop/      # 当前 SFT 实现的可追踪基线
+├── 002-codex-native-sdd/      # SDD 初始化规格
+└── 003-chinese-first-documentation/  # 中文优先文档规范
 ```
 
 任何影响行为的修改应先创建或更新规格，再实现代码。检查规格目录、状态和
@@ -37,6 +39,16 @@ make sdd-check
 
 `/init` 在这里负责让 Codex 自动加载持久的仓库规则；`specs/` 则让需求、计划、任务和
 验收标准成为版本化的事实来源。
+
+## 文档语言约定
+
+本仓库面向中文学习者，仓库自有文档、规格、计划、任务和用户说明均以简体中文正文
+为主。为避免命令失效或术语歧义，代码标识、命令、路径、模型名和第三方专有名词保留
+原文。
+
+MIT 许可证的正式文本是英文 [`LICENSE`](LICENSE)；仓库同时提供
+[`LICENSE.zh-CN.md`](LICENSE.zh-CN.md) 作为非官方中文参考。两者存在歧义时，以英文
+原文为准。
 
 ## 你会学到什么
 

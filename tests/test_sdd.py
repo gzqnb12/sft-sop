@@ -13,13 +13,38 @@ class SddValidationTest(unittest.TestCase):
     def test_missing_traceability_is_reported(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             specs_dir = Path(temp_dir)
-            (specs_dir / "README.md").write_text("# Workflow\n", encoding="utf-8")
+            (specs_dir / "README.md").write_text("# 工作流\n", encoding="utf-8")
             feature_dir = specs_dir / "002-example"
             feature_dir.mkdir()
             (feature_dir / "spec.md").write_text(
-                "# Example\n\nStatus: Accepted\n\n"
-                "## Functional requirements\n\n- FR-001: Work.\n\n"
-                "## Acceptance criteria\n\n- AC-001: It works.\n",
+                "# 示例\n\n状态：已接受\n\n"
+                "## 功能需求\n\n- FR-001：完成工作。\n\n"
+                "## 验收标准\n\n- AC-001：功能正常。\n",
+                encoding="utf-8",
+            )
+            (feature_dir / "plan.md").write_text(
+                "# 计划\n\n状态：已接受\n\n## 验证方式\n\n- 运行测试。\n",
+                encoding="utf-8",
+            )
+            (feature_dir / "tasks.md").write_text(
+                "# 任务\n\n状态：已接受\n\n- [ ] T-001 完成工作。\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_specs(specs_dir)
+            self.assertTrue(any("FR-001 未追踪" in error for error in errors))
+            self.assertTrue(any("AC-001 未追踪" in error for error in errors))
+
+    def test_historical_english_status_is_supported(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            specs_dir = Path(temp_dir)
+            (specs_dir / "README.md").write_text("# 工作流\n", encoding="utf-8")
+            feature_dir = specs_dir / "004-legacy-format"
+            feature_dir.mkdir()
+            (feature_dir / "spec.md").write_text(
+                "# Legacy\n\nStatus: Accepted\n\n"
+                "## Requirements\n\n- FR-001: Work.\n\n"
+                "## Acceptance\n\n- AC-001: It works.\n",
                 encoding="utf-8",
             )
             (feature_dir / "plan.md").write_text(
@@ -27,13 +52,12 @@ class SddValidationTest(unittest.TestCase):
                 encoding="utf-8",
             )
             (feature_dir / "tasks.md").write_text(
-                "# Tasks\n\nStatus: Accepted\n\n- [ ] T-001 Do work.\n",
+                "# Tasks\n\nStatus: Accepted\n\n"
+                "- [ ] T-001 [FR-001] [AC-001] Do work.\n",
                 encoding="utf-8",
             )
 
-            errors = validate_specs(specs_dir)
-            self.assertTrue(any("FR-001 is not traced" in error for error in errors))
-            self.assertTrue(any("AC-001 is not traced" in error for error in errors))
+            self.assertEqual(validate_specs(specs_dir), [])
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Train a LoRA adapter with TRL's SFTTrainer."""
+"""使用 TRL 的 SFTTrainer 训练 LoRA 适配器。"""
 
 from __future__ import annotations
 
@@ -38,15 +38,15 @@ class TrainConfig:
         with path.open(encoding="utf-8") as handle:
             raw = yaml.safe_load(handle)
         if not isinstance(raw, dict):
-            raise ValueError(f"{path} must contain a YAML object")
+            raise ValueError(f"{path} 必须包含一个 YAML 对象")
 
         known = {field.name for field in fields(cls)}
         missing = known - set(raw)
         unknown = set(raw) - known
         if missing:
-            raise ValueError(f"Missing config keys: {sorted(missing)}")
+            raise ValueError(f"缺少配置项：{sorted(missing)}")
         if unknown:
-            raise ValueError(f"Unknown config keys: {sorted(unknown)}")
+            raise ValueError(f"存在未知配置项：{sorted(unknown)}")
         return cls(**raw)
 
 
@@ -72,9 +72,9 @@ def train(config: TrainConfig) -> None:
     train_path = Path(config.train_file)
     validation_path = Path(config.validation_file)
     if not train_path.exists() or not validation_path.exists():
-        raise FileNotFoundError("Training data is missing. Run `make data` first.")
+        raise FileNotFoundError("缺少训练数据。请先运行 `make data`。")
 
-    # Fail fast on schema mistakes and train/test leakage before allocating a model.
+    # 在分配模型前尽早发现 schema 错误和 train/test 数据泄漏。
     if train_path.parent == validation_path.parent:
         validate_dataset(train_path.parent)
 
@@ -82,7 +82,7 @@ def train(config: TrainConfig) -> None:
     device = select_device()
     bf16 = device == "cuda" and torch.cuda.is_bf16_supported()
     fp16 = device == "cuda" and not bf16
-    print(f"Runtime device={device}, dtype={select_dtype(device)}")
+    print(f"运行设备={device}，dtype={select_dtype(device)}")
 
     dataset = load_dataset(
         "json",
@@ -148,8 +148,8 @@ def train(config: TrainConfig) -> None:
     tokenizer.save_pretrained(output_dir)
     trainer.save_metrics("train", result.metrics)
 
-    print(f"LoRA adapter saved to {output_dir}")
-    print("Next: run `make evaluate` and compare reports/baseline.json with finetuned.json.")
+    print(f"LoRA 适配器已保存到 {output_dir}")
+    print("下一步：运行 `make evaluate`，比较 reports/baseline.json 与 finetuned.json。")
 
 
 def build_parser() -> argparse.ArgumentParser:

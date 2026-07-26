@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sft-sop"
 version = "0.1.0"
-description = "A small, reproducible SOP project for learning supervised fine-tuning with TRL and LoRA."
+description = "一个使用 TRL 与 LoRA 学习监督微调的小型、可复现 SOP 项目。"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = { text = "MIT" }

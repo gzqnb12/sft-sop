@@ -1,24 +1,24 @@
-# NNN Feature name — implementation plan
+# NNN 功能名称——实现计划
 
-Status: Draft
+状态：草案
 
-## Approach
+## 实现思路
 
-Describe the proposed design and why it satisfies the specification.
+说明设计方案，以及它为什么能满足规格。
 
-## Affected files
+## 涉及文件
 
-- `path/to/file`: intended change.
+- `path/to/file`：计划进行的修改。
 
-## Decisions
+## 关键决策
 
-- Record important choices and rejected alternatives.
+- 记录重要选择和未采用的替代方案。
 
-## Risks and mitigations
+## 风险与缓解
 
-- Risk: ...
-  - Mitigation: ...
+- 风险：……
+  - 缓解：……
 
-## Verification
+## 验证方式
 
-- `command`: requirement or acceptance criterion covered.
+- `command`：覆盖的需求或验收标准。
